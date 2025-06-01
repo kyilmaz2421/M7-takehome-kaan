@@ -1,9 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { Injectable, NotImplementedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ShiftEntity, ShiftRequirements } from './shift.entity';
+import * as fs from "fs";
+import * as path from "path";
+import { Injectable, NotImplementedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { ShiftEntity, ShiftRequirements } from "./shift.entity";
 
 @Injectable()
 export class ShiftService {
@@ -25,9 +25,13 @@ export class ShiftService {
   }
 
   async getShiftRequirements(): Promise<ShiftRequirements[]> {
-    const filePath = path.join(process.cwd(), './src/shift/shiftRequirements.json');
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const shiftRequirements: ShiftRequirements[] = (JSON.parse(fileContents)["shiftRequirements"]);
+    const filePath = path.join(
+      process.cwd(),
+      "./src/shift/shiftRequirements.json",
+    );
+    const fileContents = fs.readFileSync(filePath, "utf8");
+    const shiftRequirements: ShiftRequirements[] =
+      JSON.parse(fileContents)["shiftRequirements"];
     return shiftRequirements;
   }
 }

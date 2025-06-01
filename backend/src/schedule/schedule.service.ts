@@ -1,7 +1,7 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ScheduleEntity } from './schedule.entity';
+import { Injectable, NotImplementedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { ScheduleEntity } from "./schedule.entity";
 
 @Injectable()
 export class ScheduleService {
@@ -20,7 +20,7 @@ export class ScheduleService {
   }
 
   async getScheduleById(id: number): Promise<any> {
-    return this.scheduleRepository.findOneByOrFail({id});
+    return this.scheduleRepository.findOneByOrFail({ id });
   }
 
   async getScheduleRequirements(): Promise<any> {

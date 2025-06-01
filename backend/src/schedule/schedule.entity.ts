@@ -4,17 +4,17 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
-import { ShiftEntity } from '../shift/shift.entity';
+import { ShiftEntity } from "../shift/shift.entity";
 
-@Entity('schedules')
+@Entity("schedules")
 export class ScheduleEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @OneToMany(() => ShiftEntity, (shift) => shift.schedule, {
-      eager: true,
+    eager: true,
   })
   shifts: ShiftEntity[];
 

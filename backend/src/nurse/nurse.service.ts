@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { NurseEntity } from './nurse.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { NurseEntity } from "./nurse.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class NurseService {
@@ -15,7 +15,7 @@ export class NurseService {
   }
 
   async setPreferences(id: number, preferences: any): Promise<NurseEntity> {
-    const nurse = await this.nurseRepository.findOneByOrFail({id});
+    const nurse = await this.nurseRepository.findOneByOrFail({ id });
     if (!nurse) {
       throw new Error(`Nurse with ID ${id} not found`);
     }

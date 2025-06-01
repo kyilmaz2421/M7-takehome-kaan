@@ -1,14 +1,8 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
-import { ShiftEntity } from '../shift/shift.entity';
+import { ShiftEntity } from "../shift/shift.entity";
 
-
-@Entity('nurses')
+@Entity("nurses")
 export class NurseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,9 +10,9 @@ export class NurseEntity {
   @Column({ length: 500 })
   name: string;
 
-  @Column('json', { nullable: true })
+  @Column("json", { nullable: true })
   preferences: string;
 
-  @OneToMany(() => ShiftEntity, shift => shift.nurse)
+  @OneToMany(() => ShiftEntity, (shift) => shift.nurse)
   shifts: ShiftEntity[];
 }
