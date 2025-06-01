@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: m7-health-exercise-db
+    restart: always
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: m7_health
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - ./db:/var/lib/mysql
+
+volumes:
+  db:
+    driver: local
