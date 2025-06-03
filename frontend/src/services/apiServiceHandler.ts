@@ -59,11 +59,16 @@ export class ApiServiceHandler {
     });
   }
 
-  // Shift endpoints
+  // Shift requirement endpoints
   public async getShiftRequirements(): Promise<ShiftRequirement[]> {
     return withErrorHandling(async () => {
-      const { data } = await this.instance.get(`/shifts/requirements`);
-      return data;
+      const { data } = await this.instance.get(`/shift-requirements`);
+      // Transform the data to match the ShiftRequirement interface
+      return data.map((req: any) => ({
+        dayOfWeek: req.dayOfWeek.toLowerCase(),
+        shift: req.shift,
+        nursesRequired: Number(req.nursesRequired),
+      }));
     });
   }
 

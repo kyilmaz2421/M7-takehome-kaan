@@ -7,6 +7,7 @@ import ShiftRequirements from "./components/ShiftRequirements";
 import { ShiftPreference, Nurse } from "./model/nurse";
 import { ShiftRequirement } from "./model/shift";
 import * as api from "./services/apiService";
+import { ApiError } from "./services/apiServiceHandler";
 
 function App() {
   const [nurses, setNurses] = useState<Nurse[] | null>(null);
@@ -35,9 +36,11 @@ function App() {
         );
         setNursePreferences(preferencesMap);
       } catch (err) {
-        setError(
-          `Failed to fetch nurses and preferences: ${err instanceof Error ? err.message : "Unknown error"}`,
-        );
+        const errorMessage =
+          err instanceof ApiError
+            ? `Error ${err.statusCode}: ${err.message}`
+            : "Failed to fetch nurses and preferences";
+        setError(errorMessage);
         console.error(err);
       }
     };
@@ -49,13 +52,17 @@ function App() {
   useEffect(() => {
     const fetchRequirements = async () => {
       try {
+        setError(null); // Clear any previous errors
         const requirements = await api.default.getShiftRequirements();
         setRequirements(requirements);
       } catch (err) {
-        setError(
-          `Failed to fetch requirements: ${err instanceof Error ? err.message : "Unknown error"}`,
-        );
+        const errorMessage =
+          err instanceof ApiError
+            ? `Error ${err.statusCode}: ${err.message}`
+            : "Failed to fetch shift requirements";
+        setError(errorMessage);
         console.error(err);
+        setRequirements(null); // Reset requirements on error
       }
     };
 

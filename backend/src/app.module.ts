@@ -12,10 +12,16 @@ import { NurseService } from "./nurse/nurse.service";
 import { ScheduleService } from "./schedule/services/schedule.service";
 import { ShiftService } from "./shift/shift.service";
 import { typeOrmMySQLConfig } from "./ormconfig";
+import { ShiftRequirementModule } from "./shiftRequirement/shift-requirement.module";
 
 const controllers = [NurseController, ScheduleController, ShiftController];
 
-const modules = [NurseModule, ScheduleModule, ShiftModule];
+const modules = [
+  NurseModule,
+  ScheduleModule,
+  ShiftModule,
+  ShiftRequirementModule,
+];
 
 const services = [NurseService, ScheduleService, ShiftService];
 

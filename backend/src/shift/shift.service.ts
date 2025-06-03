@@ -29,15 +29,4 @@ export class ShiftService {
       },
     });
   }
-
-  async getShiftRequirements(): Promise<ShiftRequirements[]> {
-    const filePath = path.join(
-      process.cwd(),
-      "./src/shift/shiftRequirements.json"
-    );
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const shiftRequirements: ShiftRequirements[] =
-      JSON.parse(fileContents)["shiftRequirements"];
-    return shiftRequirements;
-  }
 }
