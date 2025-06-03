@@ -5,31 +5,48 @@ import {
   Param,
   Body,
   NotImplementedException,
+  BadRequestException,
 } from "@nestjs/common";
-import { ScheduleService } from "./schedule.service";
+import { ScheduleService } from "./services/schedule.service";
+import { ShiftRequirements } from "../shift/shift.entity";
+import { Preference } from "../shiftPreference/shift-preference.types";
+import { ScheduleEntity } from "./schedule.entity";
 
 @Controller("schedules")
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   @Get()
-  async getSchedules(): Promise<any> {
+  async getSchedules(): Promise<ScheduleEntity[]> {
     return this.scheduleService.getSchedules();
   }
 
+  @Get("/latest")
+  async getMostRecentSchedules(): Promise<ScheduleEntity[]> {
+    return this.scheduleService.getMostRecentSchedules();
+  }
+
   @Get("/:id")
-  async getSchedule(@Param("id") id: number): Promise<any> {
+  async getSchedule(@Param("id") id: number): Promise<ScheduleEntity> {
     return this.scheduleService.getScheduleById(id);
   }
 
-  @Post()
+  @Post("/generate")
   async generateSchedule(
-    @Body("startDate") startDate: Date,
-    @Body("endDate") endDate: Date,
-  ): Promise<any> {
-    // TODO: Complete the implementation of this method
-    // Each time this method is called, a new schedule should be generated
-    // based on current nurse preferences and schedule requirements for the given dates
-    throw new NotImplementedException();
+    // FOR NOW WE WILL HARD CODE DATES, BUT IN THE FUTURE WE WILL ALLOW THE USER TO SELECT THE DATES
+    @Body("requirements") requirements: ShiftRequirements[],
+    @Body("nurseToPreferences")
+    nurseToPreferences: { nurseId: number; preferences: Preference[] }[]
+  ): Promise<ScheduleEntity[]> {
+    const heuristicSchedule =
+      await this.scheduleService.generateScheduleHeuristic(
+        requirements,
+        nurseToPreferences
+      );
+    const ilpSchedule = await this.scheduleService.generateScheduleILP(
+      requirements,
+      nurseToPreferences
+    );
+    return [heuristicSchedule, ilpSchedule];
   }
 }

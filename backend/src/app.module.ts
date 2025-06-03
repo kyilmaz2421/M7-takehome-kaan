@@ -9,7 +9,7 @@ import { NurseController } from "./nurse/nurse.controller";
 import { ScheduleController } from "./schedule/schedule.controller";
 import { ShiftController } from "./shift/shift.controller";
 import { NurseService } from "./nurse/nurse.service";
-import { ScheduleService } from "./schedule/schedule.service";
+import { ScheduleService } from "./schedule/services/schedule.service";
 import { ShiftService } from "./shift/shift.service";
 import { typeOrmMySQLConfig } from "./ormconfig";
 

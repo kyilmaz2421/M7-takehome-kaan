@@ -28,6 +28,9 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.2
+      glpk.js:
+        specifier: ^4.0.2
+        version: 4.0.2
       mysql2:
         specifier: ^3.10.0
         version: 3.14.1
@@ -2695,6 +2698,12 @@ packages:
       }
     engines: { node: ">=10" }
 
+  glpk.js@4.0.2:
+    resolution:
+      {
+        integrity: sha512-GADfTGaExp7C6JfBnBdx7SF80hxPO30VvLP9wpA6EhXgDj5/Oapm+gyF0EFEC7RrPX4JpfRI3TmAtlLckeQIXw==,
+      }
+
   gopd@1.2.0:
     resolution:
       {
@@ -3826,6 +3835,12 @@ packages:
     resolution:
       {
         integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==,
+      }
+
+  pako@2.1.0:
+    resolution:
+      {
+        integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==,
       }
 
   parent-module@1.0.1:
@@ -6971,6 +6986,10 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
+  glpk.js@4.0.2:
+    dependencies:
+      pako: 2.1.0
+
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -7762,6 +7781,8 @@ snapshots:
   p-try@2.2.0: {}
 
   package-json-from-dist@1.0.1: {}
+
+  pako@2.1.0: {}
 
   parent-module@1.0.1:
     dependencies:

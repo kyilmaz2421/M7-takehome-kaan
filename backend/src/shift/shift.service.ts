@@ -9,7 +9,7 @@ import { ShiftEntity, ShiftRequirements } from "./shift.entity";
 export class ShiftService {
   constructor(
     @InjectRepository(ShiftEntity)
-    private readonly shiftRepository: Repository<ShiftEntity>,
+    private readonly shiftRepository: Repository<ShiftEntity>
   ) {}
 
   async getAllShifts() {
@@ -21,13 +21,19 @@ export class ShiftService {
   }
 
   async getShiftsBySchedule(scheduleId: string) {
-    throw new NotImplementedException();
+    return this.shiftRepository.find({
+      where: {
+        schedule: {
+          id: parseInt(scheduleId),
+        },
+      },
+    });
   }
 
   async getShiftRequirements(): Promise<ShiftRequirements[]> {
     const filePath = path.join(
       process.cwd(),
-      "./src/shift/shiftRequirements.json",
+      "./src/shift/shiftRequirements.json"
     );
     const fileContents = fs.readFileSync(filePath, "utf8");
     const shiftRequirements: ShiftRequirements[] =
