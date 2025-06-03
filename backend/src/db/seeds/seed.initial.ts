@@ -10,8 +10,8 @@ export const seed = async (queryRunner: QueryRunner) => {
         NurseEntity,
         {
           name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-        },
-      ),
+        }
+      )
     );
   }
 };
