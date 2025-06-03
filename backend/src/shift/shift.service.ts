@@ -1,9 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
-import { Injectable, NotImplementedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { ShiftEntity, ShiftRequirements } from "./shift.entity";
+import { ShiftEntity } from "./shift.entity";
 
 @Injectable()
 export class ShiftService {
@@ -14,10 +12,6 @@ export class ShiftService {
 
   async getAllShifts() {
     return this.shiftRepository.find();
-  }
-
-  async getShiftsByNurse(nurseId: string) {
-    throw new NotImplementedException();
   }
 
   async getShiftsBySchedule(scheduleId: string) {

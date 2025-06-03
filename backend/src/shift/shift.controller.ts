@@ -15,11 +15,6 @@ export class ShiftController {
     return this.shiftService.getAllShifts();
   }
 
-  @Get("nurse/:nurseId")
-  async getShiftsByNurse(@Param("nurseId") nurseId: string) {
-    return this.shiftService.getShiftsByNurse(nurseId);
-  }
-
   @Get("schedule/:scheduleId")
   async getShiftsBySchedule(@Param("scheduleId") scheduleId: string) {
     return this.shiftService.getShiftsBySchedule(scheduleId);
