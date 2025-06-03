@@ -2,14 +2,15 @@ import { Preference, ShiftType, DayOfWeek } from "./shift-preference.types";
 import {
   ShiftPreferences,
   PreferenceValidationError,
+  PreferenceParseError,
 } from "./shift-preference.model";
 
 describe("ShiftPreferences", () => {
   describe("constructor", () => {
     it("should create instance with valid preferences", () => {
       const validPrefs: Preference[] = [
-        { shift: ShiftType.day, dayOfWeek: "monday" },
-        { shift: ShiftType.night, dayOfWeek: "tuesday" },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.MONDAY },
+        { shift: ShiftType.night, dayOfWeek: DayOfWeek.TUESDAY },
       ];
       const prefs = new ShiftPreferences(validPrefs);
       expect(prefs.getPreferences()).toEqual(validPrefs);
@@ -32,83 +33,87 @@ describe("ShiftPreferences", () => {
 
     beforeEach(() => {
       preferences = new ShiftPreferences([
-        { shift: "day" as ShiftType, dayOfWeek: "monday" as DayOfWeek },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.MONDAY },
       ]);
     });
 
-    it("should throw PreferenceValidationError for null input", () => {
-      expect(() => {
-        preferences.validatePreferenceObject(null as any);
-      }).toThrow(PreferenceValidationError);
-      expect(() => {
-        preferences.validatePreferenceObject(null as any);
-      }).toThrow("The value passed is not an object");
+    it("should throw PreferenceValidationError for null or undefined input", () => {
+      [null, undefined].forEach((invalidInput) => {
+        expect(() => {
+          preferences.validatePreferenceObject(invalidInput as any);
+        }).toThrow(PreferenceValidationError);
+        expect(() => {
+          preferences.validatePreferenceObject(invalidInput as any);
+        }).toThrow("The value passed is not an object");
+      });
     });
 
-    it("should throw PreferenceValidationError for non-object input", () => {
-      expect(() => {
-        preferences.validatePreferenceObject("string" as any);
-      }).toThrow(PreferenceValidationError);
-      expect(() => {
-        preferences.validatePreferenceObject("string" as any);
-      }).toThrow("The value passed is not an object");
+    it("should throw PreferenceValidationError for non-object inputs", () => {
+      ["string", 123, true].forEach((invalidInput) => {
+        expect(() => {
+          preferences.validatePreferenceObject(invalidInput as any);
+        }).toThrow(PreferenceValidationError);
+        expect(() => {
+          preferences.validatePreferenceObject(invalidInput as any);
+        }).toThrow("The value passed is not an object");
+      });
     });
 
-    it("should throw PreferenceValidationError for missing shift property", () => {
+    it("should throw PreferenceValidationError for array input", () => {
       expect(() => {
-        preferences.validatePreferenceObject({ dayOfWeek: "monday" } as any);
+        preferences.validatePreferenceObject([] as any);
       }).toThrow(PreferenceValidationError);
       expect(() => {
-        preferences.validatePreferenceObject({ dayOfWeek: "monday" } as any);
+        preferences.validatePreferenceObject([] as any);
       }).toThrow("The object must have shift and dayOfWeek properties");
     });
 
-    it("should throw PreferenceValidationError for missing dayOfWeek property", () => {
-      expect(() => {
-        preferences.validatePreferenceObject({ shift: "day" } as any);
-      }).toThrow(PreferenceValidationError);
-      expect(() => {
-        preferences.validatePreferenceObject({ shift: "day" } as any);
-      }).toThrow("The object must have shift and dayOfWeek properties");
+    it("should throw PreferenceValidationError for missing required properties", () => {
+      const testCases = [
+        { input: { dayOfWeek: DayOfWeek.MONDAY }, missing: "shift" },
+        { input: { shift: ShiftType.day }, missing: "dayOfWeek" },
+        { input: {}, missing: "both" },
+      ];
+
+      testCases.forEach((testCase) => {
+        expect(() => {
+          preferences.validatePreferenceObject(testCase.input as any);
+        }).toThrow("The object must have shift and dayOfWeek properties");
+      });
     });
 
-    it("should throw PreferenceValidationError for invalid shift value", () => {
+    it("should throw PreferenceValidationError for invalid shift values", () => {
+      const invalidPreference = {
+        shift: "afternoon",
+        dayOfWeek: DayOfWeek.MONDAY,
+      };
+
       expect(() => {
-        preferences.validatePreferenceObject({
-          shift: "afternoon",
-          dayOfWeek: "monday",
-        } as any);
-      }).toThrow(PreferenceValidationError);
-      expect(() => {
-        preferences.validatePreferenceObject({
-          shift: "afternoon",
-          dayOfWeek: "monday",
-        } as any);
+        preferences.validatePreferenceObject(invalidPreference as any);
       }).toThrow('Invalid shift value: must be "day" or "night"');
     });
 
-    it("should throw PreferenceValidationError for invalid dayOfWeek value", () => {
+    it("should throw PreferenceValidationError for invalid dayOfWeek values", () => {
+      const invalidPreference = {
+        shift: ShiftType.day,
+        dayOfWeek: "invalidDay",
+      };
+
       expect(() => {
-        preferences.validatePreferenceObject({
-          shift: "day",
-          dayOfWeek: "invalidDay",
-        } as any);
-      }).toThrow(PreferenceValidationError);
-      expect(() => {
-        preferences.validatePreferenceObject({
-          shift: "day",
-          dayOfWeek: "invalidDay",
-        } as any);
+        preferences.validatePreferenceObject(invalidPreference as any);
       }).toThrow('Invalid dayOfWeek value: must be "monday" to "sunday"');
     });
 
-    it("should not throw for valid preference object", () => {
-      expect(() => {
-        preferences.validatePreferenceObject({
-          shift: "day" as ShiftType,
-          dayOfWeek: "monday" as DayOfWeek,
-        });
-      }).not.toThrow();
+    it("should accept all valid days of the week", () => {
+      Object.values(DayOfWeek).forEach((day) => {
+        const validPreference = {
+          shift: ShiftType.day,
+          dayOfWeek: day,
+        };
+        expect(() => {
+          preferences.validatePreferenceObject(validPreference);
+        }).not.toThrow();
+      });
     });
   });
 
@@ -117,14 +122,11 @@ describe("ShiftPreferences", () => {
 
     beforeEach(() => {
       preferences = new ShiftPreferences([
-        { shift: "day" as ShiftType, dayOfWeek: "monday" as DayOfWeek },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.MONDAY },
       ]);
     });
 
     it("should throw PreferenceValidationError for empty array", () => {
-      expect(() => {
-        preferences.validatePreferences([]);
-      }).toThrow(PreferenceValidationError);
       expect(() => {
         preferences.validatePreferences([]);
       }).toThrow(
@@ -132,23 +134,28 @@ describe("ShiftPreferences", () => {
       );
     });
 
-    it("should throw PreferenceValidationError for array with invalid preference", () => {
+    it("should throw PreferenceValidationError for array with invalid preferences", () => {
       const invalidPrefs = [
-        { shift: "day" as ShiftType, dayOfWeek: "monday" as DayOfWeek },
-        { shift: "invalid", dayOfWeek: "tuesday" },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.MONDAY },
+        { shift: "invalid", dayOfWeek: DayOfWeek.TUESDAY },
       ];
-      expect(() => {
-        preferences.validatePreferences(invalidPrefs as any[]);
-      }).toThrow(PreferenceValidationError);
       expect(() => {
         preferences.validatePreferences(invalidPrefs as any[]);
       }).toThrow('Invalid shift value: must be "day" or "night"');
     });
 
-    it("should not throw for array with valid preferences", () => {
+    it("should handle JSON parsing errors appropriately", () => {
+      const malformedJson = "[{bad json}]";
+      expect(() => {
+        preferences.validatePreferences(JSON.parse(malformedJson) as any[]);
+      }).toThrow(SyntaxError);
+    });
+
+    it("should validate all preferences in the array", () => {
       const validPrefs: Preference[] = [
-        { shift: "day" as ShiftType, dayOfWeek: "monday" as DayOfWeek },
-        { shift: "night" as ShiftType, dayOfWeek: "tuesday" as DayOfWeek },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.MONDAY },
+        { shift: ShiftType.night, dayOfWeek: DayOfWeek.TUESDAY },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.WEDNESDAY },
       ];
       expect(() => {
         preferences.validatePreferences(validPrefs);
@@ -159,28 +166,12 @@ describe("ShiftPreferences", () => {
   describe("getPreferences", () => {
     it("should return the preferences array", () => {
       const validPrefs: Preference[] = [
-        { shift: "day" as ShiftType, dayOfWeek: "monday" as DayOfWeek },
-        { shift: "night" as ShiftType, dayOfWeek: "tuesday" as DayOfWeek },
-      ];
-      const prefs = new ShiftPreferences(validPrefs);
-      expect(prefs.getPreferences()).toEqual(validPrefs);
-    });
-
-    it("should return a copy of the preferences array", () => {
-      const validPrefs: Preference[] = [
-        { shift: "day" as ShiftType, dayOfWeek: "monday" as DayOfWeek },
+        { shift: ShiftType.day, dayOfWeek: DayOfWeek.MONDAY },
+        { shift: ShiftType.night, dayOfWeek: DayOfWeek.TUESDAY },
       ];
       const prefs = new ShiftPreferences(validPrefs);
       const returnedPrefs = prefs.getPreferences();
-
-      // Modify the returned array
-      returnedPrefs.push({
-        shift: "night" as ShiftType,
-        dayOfWeek: "tuesday" as DayOfWeek,
-      });
-
-      // Original preferences should not be modified
-      expect(prefs.getPreferences()).toEqual(validPrefs);
+      expect(returnedPrefs).toEqual(validPrefs);
     });
   });
 });

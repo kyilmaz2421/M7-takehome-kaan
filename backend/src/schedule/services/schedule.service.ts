@@ -90,13 +90,4 @@ export class ScheduleService {
     }
     return schedules;
   }
-
-  // WAS Unable to complete this in time
-  async getScheduleRequirements(): Promise<any> {
-    // TODO: Complete the implementation of this method
-    // Schedule requirements can be hard-coded
-    // Requirements must indicate the number of nurses required for each shift type on each day of a week
-    // Create the requirements as JSON and make it available via this method
-    throw new NotImplementedException();
-  }
 }
